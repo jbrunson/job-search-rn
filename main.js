@@ -26,6 +26,11 @@ class App extends Component {
               settings: { screen: SettingsScreen }
             })
           }
+        }, {
+          tabBarPosition: 'bottom',
+          tabBarOptions: {
+            labelStyle: { fontSize: 12 }
+          }
         })
       }
     }, {
