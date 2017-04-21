@@ -1,4 +1,4 @@
 node_modules/**/*
 .expo/*
 npm-debug.*
-private_variables
+/private_variables.js

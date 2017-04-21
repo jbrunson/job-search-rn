@@ -1,1 +1,0 @@
-export default FB_TOKEN = '645861452264253';

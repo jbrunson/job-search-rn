@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Text, View, Platform } from 'react-native';
-import { Button } from 'react-native-elements';
+import { connect } from 'react-redux';
+import { Text, View, Platform, ScrollView, Linking } from 'react-native';
+import { Button, Card } from 'react-native-elements';
+import { MapView } from 'expo';
 
 class ReviewScreen extends Component {
   static navigationOptions = {
@@ -21,16 +23,62 @@ class ReviewScreen extends Component {
     }
   }
 
+  renderLikedJobs = () => {
+    return this.props.likedJobs.map(job => {
+      const { jobkey, detailWrapper, company, formattedRelativeTime, url, longitude, latitude } = job;
+      const initialRegion = {
+        longitude,
+        latitude,
+        longitudeDelta: 0.02,
+        latitudeDelta: 0.045
+      };
+
+      return (
+        <Card key={jobkey}>
+          <View style={{height: 200}}>
+            <MapView
+              style={{flex: 1}}
+              cacheEnabled={Platform.OS === 'android'}
+              scrollEnabled={false}
+              initialRegion={initialRegion}
+            />
+            <View style={styles.detailWrapper}>
+              <Text style={styles.italics}>{company}</Text>
+              <Text style={styles.italics}>{formattedRelativeTime}</Text>
+            </View>
+            <Button
+              title="Apply Now!"
+              backgroundColor="#03A9F4"
+              onPress={() => Linking.openURL(url)}
+            />
+          </View>
+        </Card>
+      );
+    });
+  }
+
   render() {
     return (
-      <View>
-        <Text>ReviewScreen</Text>
-        <Text>ReviewScreen</Text>
-        <Text>ReviewScreen</Text>
-        <Text>ReviewScreen</Text>
-      </View>
+      <ScrollView>
+        {this.renderLikedJobs()}
+      </ScrollView>
     );
   }
 }
 
-export default ReviewScreen;
+const styles = {
+  detailWrapper: {
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  italics: {
+    fontStyle: 'italic'
+  }
+}
+
+function mapStateToProps(state) {
+  return { likedJobs: state.likedJobs };
+}
+
+export default connect(mapStateToProps)(ReviewScreen);
